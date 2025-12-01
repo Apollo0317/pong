@@ -1,63 +1,87 @@
-import pygame
-from config.config import *
 from pong.plane.FlyingObject import FlyingObject
-from typing import override
-from pong.plane.bullet import Bullet
+from pong.bullet.Y_bullet import YBullet
+from pong.bullet.Trace_bullet import HomingBullet
+from pong.bullet.bullet import Bullet
+from pong.manager.GameManager import gm
+from pong.utils.collision import check_bullet_hits
+from pong.config.config import *
+import pygame
 import time
 
+PLAYER_HITBOX_SIZE= (16, 16)
+
 class Player(FlyingObject):
-
-    def __init__(self, fig_path, renderer):
-        super().__init__(fig_path, renderer)
-        self.bullets:list[Bullet]= []
+    def __init__(self, fig_path):
+        super().__init__(fig_path, group='player', hitbox_size= PLAYER_HITBOX_SIZE)
+        self.speed_length= DEFAULT_SPEED * 1.5
+        self.bullets = []
+        self.hp = DEFAULT_HEALTH
+        self.last_fire_time = 0
+        self.hit_num = 0
+        self.kill_num = 0
         self.layer= 1
-        self.last_fire_time= 0
 
-    def fire(self):
-        bullet= Bullet(
-            fig_path='assets/fig/bullet.png',
-            x= self.pos.x,
-            y= self.pos.y - SPRITE_SIZE[1] // 4,
-            attack= 10,
-            renderer= self.renderer
-        )
-        self.bullets.append(bullet)
-        pass
-
-    @override
     def update(self, dt: float):
+        self._handle_input(dt)
+        super().update(dt)
+        
+        self.bullets = [b for b in self.bullets if b.alive]
+        self.hit_num += check_bullet_hits(self.bullets, gm.enemies)
+        
+        self._clamp_to_screen()
+
+    def _handle_input(self, dt: float):
         keys = pygame.key.get_pressed()
-        direction = pygame.Vector2(0,0)
-
-        if keys[pygame.K_w]: direction.y -= 1
-        if keys[pygame.K_s]: direction.y += 1
-        if keys[pygame.K_a]: direction.x -= 1
-        if keys[pygame.K_d]: direction.x += 1
-        if keys[pygame.K_k]: 
-            if time.time() - self.last_fire_time > FIRE_INTERVAL*dt:
-                self.fire()
-                self.last_fire_time= time.time()
-
+        direction = pygame.Vector2(
+            keys[pygame.K_d] - keys[pygame.K_a],
+            keys[pygame.K_s] - keys[pygame.K_w]
+        )
         if direction.length_squared() > 0:
             direction = direction.normalize()
-
-        self.speed = direction * DEFAULT_SPEED
-
-        self.pos += self.speed * dt
-        self.rect.center = self.pos
-
-        # boundary
-        if self.rect.left < 0: self.rect.left = 0
-        if self.rect.right > WIDTH: self.rect.right = WIDTH
-        if self.rect.top < 0: self.rect.top = 0
-        if self.rect.bottom > HEIGHT: self.rect.bottom = HEIGHT
-
-        self.pos = pygame.Vector2(self.rect.center)
-
-        #update bullets
-        alives= [ bullet.update(dt) for bullet in self.bullets]
-        self.bullets= [ bullet for i, bullet in enumerate(self.bullets) if alives[i] ]
-
-
-
+        self.speed = direction * self.speed_length
         
+        if time.time() - self.last_fire_time > 2*FIRE_INTERVAL*dt:
+            if keys[pygame.K_j]:
+                self.fire(type='Y')
+            elif keys[pygame.K_k]:
+                self.fire(type='normal')
+            elif keys[pygame.K_l]:
+                self.fire(type='trace')
+            else:
+                return
+            self.last_fire_time = time.time()
+
+    def _clamp_to_screen(self):
+        self.pos.x = max(self.hitbox.width // 2, min(WIDTH - self.hitbox.width // 2, self.pos.x))
+        self.pos.y = max(self.hitbox.height // 2, min(HEIGHT - self.hitbox.height // 2, self.pos.y))
+        self.rect.center = self.pos
+        self.hitbox.center = self.pos
+    
+    def fire(self, type='normal'):
+        if type == 'Y':
+            bullet = YBullet(
+                x=self.pos.x,
+                y=self.pos.y - SPRITE_SIZE[1] // 4,
+                attack=10,
+                speed=pygame.Vector2(0, -DEFAULT_SPEED),
+                player=self
+            )
+        elif type == 'normal':
+            bullet= Bullet(
+                fig_path='assets/fig/bullet.png',
+                x= self.pos.x,
+                y= self.pos.y - SPRITE_SIZE[1] // 4,
+                attack= 5,
+                speed= pygame.Vector2(0, -DEFAULT_SPEED),
+                hitbox_size= BULLET_BOX_SIZE
+            )
+        elif type == 'trace':
+            bullet= HomingBullet(
+                x= self.pos.x,
+                y= self.pos.y - SPRITE_SIZE[1] // 4,
+                attack= 8,
+                speed= pygame.Vector2(0, -DEFAULT_SPEED/2),
+                target_group= 'enemy'
+            )
+        self.bullets.append(bullet)
+        pass
