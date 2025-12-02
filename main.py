@@ -2,51 +2,67 @@ import sys
 sys.path.append('../')
 import pygame
 from pong.config.config import *
-from pong.plane.player import Player
-from pong.plane.enemy import Enemy
-from pong.manager.GameManager import gm
+from pong.object.plane.player import Player
+from pong.object.plane.enemy import Enemy
+from pong.core import SceneManager
+from pong.scene.MainMenuScene import MainMenuScene
+from pong.instance import set_sm
 import time
 
 
 
 def game_init():
-    pygame.init()
     screen= pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Pong")
     clock= pygame.time.Clock()
     return screen, clock
 
+def game_clear():
+    pass
+
 
 def main():
+    
     screen, clock= game_init()
+
+    sm= SceneManager(screen= screen)
+    set_sm(sm)
+
+    main_menu_scene= MainMenuScene()
 
     background= pygame.transform.scale(
         pygame.image.load('assets/fig/bg.png').convert(),
         SCREEN_SIZE
     )
 
-    gm.set_bg(background)
+    main_menu_scene.set_bg(background)
 
-    Player(fig_path='assets/fig/player.png')
-
-    dt= 0
-
-    last_enemy_spawn_time= time.time()
+    sm.set_scene('MainMenuScene')
 
     while True:
-        for event in pygame.event.get():
+        dt= clock.tick(FPS)/1000
+
+        events= pygame.event.get()
+        pressed_keys= pygame.key.get_pressed()
+
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
+                return
 
-        if time.time() - last_enemy_spawn_time >= DEFAULT_ENEMY_SPAWN_INTERVAL * dt:
-            Enemy.enemy_generator()
-            last_enemy_spawn_time= time.time()
+        sm.update(dt, events)
 
-        gm.update_all(dt)
-        gm.draw(screen)
+        sm.draw()
 
-        dt= clock.tick(FPS) / 1000  # seconds passed since last frame
-        gm.get_fps(dt)
+        pygame.display.flip()
+
+        
+        
+
+
+
+
+
 
 
 

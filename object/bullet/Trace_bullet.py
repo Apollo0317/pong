@@ -1,11 +1,11 @@
 import pygame
-from pong.bullet.bullet import Bullet
-from pong.manager.GameManager import gm
+from pong.object.bullet.bullet import Bullet
+from pong.instance import get_sm
 
 class HomingBullet(Bullet):
     """追踪子弹 - 自动追踪最近的敌人"""
     
-    def __init__(self, x, y, attack, speed, turn_speed=3, target_group='enemy'):
+    def __init__(self, x, y, attack, speed, turn_speed=4, target_group='enemy'):
         super().__init__(
             fig_path='assets/fig/bullet_blue.png',
             x=x, y=y,
@@ -14,6 +14,7 @@ class HomingBullet(Bullet):
         )
         self.turn_speed = turn_speed  # 转向速度
         self.target_group = target_group  # 目标组别
+        self.minimum_y_speed = 100
     
     def update(self, dt: float):
         target = self._find_nearest_target()
@@ -25,14 +26,19 @@ class HomingBullet(Bullet):
                 desired = to_target.normalize() * self.speed.length()
                 # 平滑转向
                 self.speed = self.speed.lerp(desired, self.turn_speed * dt)
+                if self.target_group == 'enemy':
+                    self.speed.y = min(self.speed.y, -self.minimum_y_speed)
+                else:
+                    self.speed.y = max(self.speed.y, self.minimum_y_speed)
         
         super().update(dt)
     
     def _find_nearest_target(self):
+        sm= get_sm()
         if self.target_group == 'enemy':
-            targets = gm.enemies
+            targets = sm.get_scene.enemies
         else:
-            targets = gm.players
+            targets = sm.get_scene.players
         nearest = None
         min_dist = float('inf')
         

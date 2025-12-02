@@ -1,6 +1,6 @@
 import pygame
 from pong.config.config import *
-from pong.manager.GameManager import gm
+from pong.instance import get_sm
 
 class FlyingObject:
     def __init__(self, fig_path: str, hitbox_size= PLANE_BOX_SIZE, group: str= None):
@@ -14,7 +14,7 @@ class FlyingObject:
         self.hitbox = pygame.Rect(0, 0, hitbox_size[0], hitbox_size[1])
         self.hitbox.center = self.rect.center
         self.alive = True
-        gm.register(obj=self, group=group)
+        get_sm().get_scene.register(obj=self, group=group)
 
     def update(self, dt: float):
         self.pos += self.speed * dt

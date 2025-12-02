@@ -1,5 +1,5 @@
 import pygame
-from pong.bullet.bullet import Bullet
+from pong.object.bullet.bullet import Bullet
 from pong.config.config import *
 
 class YBullet(Bullet):

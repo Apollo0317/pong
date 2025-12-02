@@ -1,9 +1,9 @@
 import pygame
 from config.config import *
-from pong.plane.FlyingObject import FlyingObject
+from pong.core.FlyingObject import FlyingObject
 from pong.utils.collision import check_bullet_hits
-from pong.manager.GameManager import gm
-from pong.bullet.bullet import Bullet
+from pong.instance import get_sm
+from pong.object.bullet import Bullet
 import time, random
 
 ENEMY_FIRE_INTERVAL= 60
@@ -60,7 +60,7 @@ class Enemy(FlyingObject):
         self.bullets= [bullet for bullet in self.bullets if bullet.alive]
 
         #check if bullets collide with player
-        check_bullet_hits(self.bullets, gm.players)
+        check_bullet_hits(self.bullets, get_sm().get_scene.players)
 
         # fire every interval
         current_time= time.time()

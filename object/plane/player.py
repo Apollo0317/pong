@@ -1,8 +1,6 @@
-from pong.plane.FlyingObject import FlyingObject
-from pong.bullet.Y_bullet import YBullet
-from pong.bullet.Trace_bullet import HomingBullet
-from pong.bullet.bullet import Bullet
-from pong.manager.GameManager import gm
+from pong.core.FlyingObject import FlyingObject
+from pong.object.bullet import YBullet, HomingBullet, Bullet
+from pong.instance import get_sm
 from pong.utils.collision import check_bullet_hits
 from pong.config.config import *
 import pygame
@@ -26,7 +24,7 @@ class Player(FlyingObject):
         super().update(dt)
         
         self.bullets = [b for b in self.bullets if b.alive]
-        self.hit_num += check_bullet_hits(self.bullets, gm.enemies)
+        self.hit_num += check_bullet_hits(self.bullets, get_sm().get_scene.enemies)
         
         self._clamp_to_screen()
 
