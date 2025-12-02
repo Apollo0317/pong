@@ -1,4 +1,4 @@
-from pong.core.FlyingObject import FlyingObject
+from pong.object.FlyingObject import FlyingObject
 from pong.object.bullet import YBullet, HomingBullet, Bullet
 from pong.instance import get_sm
 from pong.utils.collision import check_bullet_hits

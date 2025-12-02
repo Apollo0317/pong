@@ -1,6 +1,6 @@
 import pygame
 from config.config import *
-from pong.core.FlyingObject import FlyingObject
+from pong.object.FlyingObject import FlyingObject
 from pong.utils.collision import check_bullet_hits
 from pong.instance import get_sm
 from pong.object.bullet import Bullet

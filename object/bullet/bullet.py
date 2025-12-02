@@ -1,6 +1,6 @@
 import pygame
 from config.config import *
-from pong.core.FlyingObject import FlyingObject
+from pong.object.FlyingObject import FlyingObject
 
 class Bullet(FlyingObject):
     def __init__(self, fig_path: str, x, y, attack:int, speed:pygame.Vector2, hitbox_size= BULLET_BOX_SIZE):
