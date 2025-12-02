@@ -1,7 +1,8 @@
 from pong.core import BaseScene
 from pong.instance import get_sm
 from pong.config.config import *
-from pong.object.plane import Player, Enemy
+from pong.object.plane import Player
+from pong.utils import enemy_generator
 import pygame
 import time
 
@@ -33,7 +34,7 @@ class Level1(BaseScene):
 
         cur_time= time.time()
         if cur_time - self.last_spawn_time > 3:
-            Enemy.enemy_generator()
+            enemy_generator()
             self.last_spawn_time= cur_time
 
         if self.player.hp <= 0:

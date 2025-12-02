@@ -1,16 +1,18 @@
 import pygame
 from pong.object.bullet.bullet import Bullet
 from pong.instance import get_sm
+from pong.config.config import *
 
 class HomingBullet(Bullet):
     """追踪子弹 - 自动追踪最近的敌人"""
     
-    def __init__(self, x, y, attack, speed, turn_speed=4, target_group='enemy'):
+    def __init__(self, x, y, attack, speed, turn_speed=2, target_group='enemy'):
         super().__init__(
             fig_path='assets/fig/bullet_blue.png',
             x=x, y=y,
             attack=attack,
-            speed=speed
+            speed=speed,
+            hitbox_size= BULLET_BOX_SIZE
         )
         self.turn_speed = turn_speed  # 转向速度
         self.target_group = target_group  # 目标组别

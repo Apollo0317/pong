@@ -62,7 +62,6 @@ class Player(FlyingObject):
                 y=self.pos.y - SPRITE_SIZE[1] // 4,
                 attack=10,
                 speed=pygame.Vector2(0, -DEFAULT_SPEED),
-                player=self
             )
         elif type == 'normal':
             bullet= Bullet(

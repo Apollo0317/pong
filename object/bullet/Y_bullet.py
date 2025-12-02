@@ -1,22 +1,24 @@
 import pygame
 from pong.object.bullet.bullet import Bullet
+from pong.instance import get_sm
 from pong.config.config import *
 
 class YBullet(Bullet):
     """发射后分裂成3颗子弹"""
     
-    def __init__(self, x, y, attack, speed, player, split_delay=0.3):
+    def __init__(self, x, y, attack, speed, split_delay=0.3, target_group='enemy'):
         super().__init__(
             fig_path='assets/fig/bullet_green.png',
             x=x, y=y,
             attack=attack,
-            speed=speed
+            speed=speed,
+            hitbox_size = BULLET_BOX_SIZE
         )
         self.split_delay = split_delay  # 分裂延迟（秒）
         self.timer = 0
         self.has_split = False
         self.children = []  # 分裂出的子弹
-        self.player = player  # 引用玩家对象，便于访问属性
+        self.target_group = target_group
     
     def update(self, dt: float):
         super().update(dt)
@@ -41,7 +43,10 @@ class YBullet(Bullet):
                 attack= 1 ,  # 伤害减半
                 speed=direction * base_speed
             )
-            self.player.bullets.append(child)
+            if self.target_group == 'enemy':
+                get_sm().get_scene.player.bullets.append(child)
+            else:
+                get_sm().get_scene.enemies[0].bullets.append(child)
     
     def draw(self, screen):
         super().draw(screen)
