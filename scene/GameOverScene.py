@@ -6,24 +6,23 @@ import pygame
 import time
 
 
-class StopScene(BaseScene):
+class GameOverScene(BaseScene):
     def __init__(self):
         super().__init__()
-        self.current_commands = []
         # Initialize stop scene specific attributes here
+        self.current_commands = []
 
     def handle_commands(self, commands: list[command]):
         for command in commands:
+            if command.command_type == CommandType.ENTER:
+                get_sm().set_scene("MainMenuScene")
+                print("Returning to Main Menu Scene")
             if command.command_type == CommandType.QUIT:
                 pygame.quit()
-            if command.command_type == CommandType.PAUSE:
-                print("Resuming to Level1 Scene")
-                get_sm().set_scene(resume=True)
 
-    def update(self, dt, commands: list[command]):
+    def update(self, dt, commands: list):
         self.handle_commands(commands)
-        pass
 
     def draw(self, screen: pygame.Surface):
-        self.hud._draw_text(screen, "Game Stop", (WIDTH / 2, HEIGHT / 2))
+        self.hud._draw_game_over(screen)
         pass

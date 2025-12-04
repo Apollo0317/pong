@@ -1,0 +1,6 @@
+k -> fire_a
+j -> fire_b
+l -> fire_c
+w,a,s,d -> move_up,move_left,move_down,move_right
+space -> enter
+o -> pause
