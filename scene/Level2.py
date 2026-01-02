@@ -9,7 +9,7 @@ import pygame
 import time
 
 
-class Level1(BaseScene):
+class Level2(BaseScene):
     def __init__(self):
         super().__init__()
         self.last_spawn_time = time.time()
@@ -36,7 +36,7 @@ class Level1(BaseScene):
         super().update(dt)
 
         if self.enable_boss:
-            self.boss= create_stage1_boss()
+            self.boss= create_stage2_boss()
             self.enable_boss = False
 
         # cur_time = time.time()
@@ -47,7 +47,7 @@ class Level1(BaseScene):
         if self.player.hp <= 0:
             print("Player defeated!")
             get_sm().set_scene("GameOverScene")
-        
+
         if self.boss and self.boss.current_spell is None:
             print("Boss defeated! Level Complete!")
             get_sm().set_scene("MainMenuScene")

@@ -7,6 +7,8 @@ class CommandType(Enum):
     PAUSE = auto()
     ENTER = auto()
     QUIT = auto()
+    MENU_UP = auto()
+    MENU_DOWN = auto()
 
 
 class command:

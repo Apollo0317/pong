@@ -19,15 +19,15 @@ class HUD:
 
         # 血量
         hp_text = f"HP: {player.hp}"
-        self._draw_text(screen, hp_text, (10, 10))
+        self._draw_text(screen, hp_text, (10, 50))
 
         # 击杀数
         kills_text = f"Kills: {player.kill_num}"
-        self._draw_text(screen, kills_text, (10, 50))
+        self._draw_text(screen, kills_text, (10, 100))
 
         # FPS
         fps_text = f"FPS: {fps}"
-        self._draw_text(screen, fps_text, (WIDTH - 150, 10))
+        self._draw_text(screen, fps_text, (WIDTH - 150, 100))
 
         # 可选：绘制血条
         self._draw_health_bar(screen, player)
@@ -44,7 +44,7 @@ class HUD:
     def _draw_health_bar(self, screen, player):
         bar_width = 100
         bar_height = 20
-        x, y = 10, 90
+        x, y = 10, 145
 
         # 背景（灰色）
         pygame.draw.rect(screen, (50, 50, 50), (x, y, bar_width, bar_height))

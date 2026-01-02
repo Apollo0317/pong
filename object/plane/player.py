@@ -7,7 +7,7 @@ from pong.input import command, CommandType
 import pygame
 import time
 
-PLAYER_HITBOX_SIZE = (16, 16)
+PLAYER_HITBOX_SIZE = (6, 6)
 
 
 class Player(FlyingObject):

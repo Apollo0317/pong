@@ -40,6 +40,17 @@ class SceneManager:
 
                 cur_scene = Level1()
                 cur_scene.set_bg(self.bg)
+            case "Level2":
+                from pong.scene.Level2 import Level2
+
+                cur_scene = Level2()
+                cur_scene.set_bg(self.bg)
+            case "Level3":
+                from pong.scene.Level3 import Level3
+
+                cur_scene = Level3()
+                cur_scene.set_bg(self.bg)
+
             case "StopScene":
                 from pong.scene.StopScene import StopScene
 

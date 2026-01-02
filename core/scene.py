@@ -1,5 +1,6 @@
 import pygame
 from pong.UI.UI import HUD
+import time
 
 
 class BaseScene:
@@ -13,6 +14,7 @@ class BaseScene:
         self.hud = HUD()
         self.fps = 0
         self.filter_effienct = 0.8
+        self.last_summerize_time = 0
 
     def set_bg(self, bg):
         self.bg = bg
@@ -31,6 +33,13 @@ class BaseScene:
         check_bullet_hits(self.enemy_bullets, self.players)
         self.player_bullets = [b for b in self.player_bullets if b.alive]
         self.enemy_bullets = [b for b in self.enemy_bullets if b.alive]
+
+    def summrize_object_number(self):
+        print(
+            f"Total Objects: {len(self.objects)}, Players: {len(self.players)}, \
+            Enemies: {len(self.enemies)}, Player Bullets: {len(self.player_bullets)}, \
+            Enemy Bullets: {len(self.enemy_bullets)}"
+        )
 
     def update(self, dt):
         self.fps = int(
@@ -52,6 +61,11 @@ class BaseScene:
                 self.enemies.remove(obj)
                 if self.players:
                     self.players[0].kill_num += 1
+        
+        cur_time = time.time()
+        if cur_time - self.last_summerize_time > 2:
+            self.summrize_object_number()
+            self.last_summerize_time = cur_time
 
     def draw(self, screen):
         screen.blit(self.bg, (0, 0))

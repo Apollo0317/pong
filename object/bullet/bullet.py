@@ -12,6 +12,7 @@ class Bullet(FlyingObject):
         attack: int,
         speed: pygame.Vector2,
         hitbox_size=BULLET_BOX_SIZE,
+        target_group=None
     ):
         super().__init__(fig_path, hitbox_size=hitbox_size)
         self.pos = pygame.Vector2(x, y)
@@ -19,6 +20,8 @@ class Bullet(FlyingObject):
         self.attack = attack
         self.speed = speed
         self.layer = 2
+        if target_group == 'player':
+            self.image = pygame.transform.flip(self.image, False, True)
 
     def is_in_sight(self) -> bool:
         if not (0 <= self.pos.x <= WIDTH and 0 <= self.pos.y <= HEIGHT):
